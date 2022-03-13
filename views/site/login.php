@@ -25,7 +25,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
         ],
     ]); ?>
-
+        <?= $form->field($model, 'fullName')->textInput(['autofocus' => true]) ?>
+    
         <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
         <?= $form->field($model, 'password')->passwordInput() ?>

@@ -2,9 +2,15 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use app\interfaces\Author;
+use app\interfaces\Moderator;
+use yii\base\BaseObject;
+use yii\web\IdentityInterface;
+
+class User extends BaseObject implements IdentityInterface, Author, Moderator
 {
     public $id;
+    public $fullName;
     public $username;
     public $password;
     public $authKey;
@@ -13,6 +19,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     private static $users = [
         '100' => [
             'id' => '100',
+            'fullName' => 'admin',
             'username' => 'admin',
             'password' => 'admin',
             'authKey' => 'test100key',
@@ -20,6 +27,7 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
         ],
         '101' => [
             'id' => '101',
+            'fullName' => 'demo',
             'username' => 'demo',
             'password' => 'demo',
             'authKey' => 'test101key',
@@ -101,4 +109,25 @@ class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
     {
         return $this->password === $password;
     }
+
+    public function create(Post $post) {
+        $post->status = Post::STATUS_MOD;
+    }
+
+    public function getName() {
+        return $this->username;
+    }
+
+    public function publish(Post $post) {
+        $post->status = Post::STATUS_PUB;
+    }
+
+    public function unPublish(Post $post) {
+        $post->status = Post::STATUS_UNPUB;
+    }
+
+    public function update(Post $post) {
+        
+    }
+
 }
