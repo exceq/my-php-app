@@ -2,109 +2,90 @@
 
 namespace app\models;
 
-use yii\base\BaseObject;
-use yii\web\IdentityInterface;
+use Yii;
 
-class User extends BaseObject implements IdentityInterface
+/**
+ * This is the model class for table "user".
+ *
+ * @property int $id
+ * @property string|null $lastname
+ * @property string|null $firstname
+ * @property string $email
+ * @property string $password
+ * @property string|null $phone_number
+ * @property string $registration_date
+ * @property string|null $birthday
+ *
+ * @property Comment[] $comments
+ * @property Order[] $orders
+ * @property Payment[] $payments
+ */
+class User extends \yii\db\ActiveRecord
 {
-    public $id;
-    public $fullName;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'fullName' => 'admin',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'fullName' => 'demo',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
-
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id)
+    public static function tableName()
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return 'user';
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public function rules()
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return [
+            [['email', 'password', 'registration_date'], 'required'],
+            [['registration_date', 'birthday'], 'safe'],
+            [['lastname', 'firstname', 'email', 'password', 'phone_number'], 'string', 'max' => 255],
+        ];
     }
 
     /**
-     * Finds user by username
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'lastname' => 'Lastname',
+            'firstname' => 'Firstname',
+            'email' => 'Email',
+            'password' => 'Password',
+            'phone_number' => 'Phone Number',
+            'registration_date' => 'Registration Date',
+            'birthday' => 'Birthday',
+        ];
+    }
+
+    /**
+     * Gets query for [[Comments]].
      *
-     * @param string $username
-     * @return static|null
+     * @return \yii\db\ActiveQuery
      */
-    public static function findByUsername($username)
+    public function getComments()
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return $this->hasMany(Comment::className(), ['user_id' => 'id']);
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey()
-    {
-        return $this->authKey;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
+     * Gets query for [[Orders]].
      *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
+     * @return \yii\db\ActiveQuery
      */
-    public function validatePassword($password)
+    public function getOrders()
     {
-        return $this->password === $password;
+        return $this->hasMany(Order::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Payments]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPayments()
+    {
+        return $this->hasMany(Payment::className(), ['user_id' => 'id']);
     }
 }
