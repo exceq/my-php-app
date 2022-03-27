@@ -2,12 +2,10 @@
 
 namespace app\models;
 
-use app\interfaces\Author;
-use app\interfaces\Moderator;
 use yii\base\BaseObject;
 use yii\web\IdentityInterface;
 
-class User extends BaseObject implements IdentityInterface, Author, Moderator
+class User extends BaseObject implements IdentityInterface
 {
     public $id;
     public $fullName;
@@ -109,25 +107,4 @@ class User extends BaseObject implements IdentityInterface, Author, Moderator
     {
         return $this->password === $password;
     }
-
-    public function create(Post $post) {
-        $post->status = Post::STATUS_MOD;
-    }
-
-    public function getName() {
-        return $this->username;
-    }
-
-    public function publish(Post $post) {
-        $post->status = Post::STATUS_PUB;
-    }
-
-    public function unPublish(Post $post) {
-        $post->status = Post::STATUS_UNPUB;
-    }
-
-    public function update(Post $post) {
-        
-    }
-
 }
