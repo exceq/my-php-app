@@ -1,9 +1,10 @@
 <?php
 
+use app\models\Product;
+use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
-use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -20,13 +21,25 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
 
-    <?= ListView::widget([
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => function ($model, $key, $index, $widget) {
-            return Html::a(Html::encode($model->name), ['view', 'id' => $model->id]);
-        },
-    ]) ?>
+        'columns' => [
+//            ['class' => 'yii\grid\SerialColumn'],
+
+            'id',
+            'name',
+            'description',
+            'price',
+            'active',
+            //'category_id',
+            [
+                'class' => ActionColumn::className(),
+                'urlCreator' => function ($action, Product $model, $key, $index, $column) {
+                    return Url::toRoute([$action, 'id' => $model->id]);
+                }
+            ],
+        ],
+    ]); ?>
 
 
 </div>

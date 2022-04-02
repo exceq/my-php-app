@@ -7,8 +7,11 @@
 
 namespace app\commands;
 
+use Yii;
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\db\Exception;
+use yii\helpers\Console;
 
 /**
  * This command echoes the first argument that you have entered.
@@ -30,5 +33,21 @@ class HelloController extends Controller
         echo $message . "\n";
 
         return ExitCode::OK;
+    }
+
+    public function actionDump($table_name)
+    {
+        try {
+            $sql = "SELECT * FROM $table_name";
+            $dataReader = Yii::$app->db->createCommand($sql)->queryAll();
+            foreach ($dataReader as $item) {
+                var_dump($item);
+            }
+
+            return ExitCode::OK;
+        } catch (Exception $e) {
+            Console::error($e->getMessage());
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
     }
 }
