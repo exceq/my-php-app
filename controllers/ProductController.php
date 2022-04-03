@@ -68,7 +68,6 @@ class ProductController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'modelComment' => new Comment(),
         ]);
     }
 
