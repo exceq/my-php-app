@@ -2,15 +2,18 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\DetailView;
+use yii\widgets\ActiveForm;
+
+/* @var $model app\models\Product */
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Product */
+/* @var $modelComment app\models\Comment */
+/* @var $form ActiveForm */
 
 $this->title = $model->name;
 
 foreach ($model->category->getAllCategories() as $category)
-    $this->params['breadcrumbs'][] = ['label' => $category->name, 'url' => Url::toRoute('/category  /' .$category->transliterated_name)];
+    $this->params['breadcrumbs'][] = ['label' => $category->name, 'url' => Url::toRoute('/category/view?id=' . $category->id)];
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -19,52 +22,75 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="product-view">
 
     <!--    <h1>--><? //= Html::encode($this->title) ?><!--</h1>-->
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest && Yii::$app->user->role->name != 'USER'): ?>
+        <p>
+            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+            <!--        --><? //= Html::a('Delete', ['delete', 'id' => $model->id], [
+            //            'class' => 'btn btn-danger',
+            //            'data' => [
+            //                'confirm' => 'Are you sure you want to delete this item?',
+            //                'method' => 'post',
+            //            ],
+            //        ]) ?>
+        </p>
+    <?php endif; ?>
 
-
-    <div class="row align-items-start">
-        <div class="col">
-
-            <img width="500px"
-                 src="https://storage-cdn5.gloria-jeans.ru/medias/BAC009159-4-01-1200Wx1200H.jpg?context=bWFzdGVyfHByb2R1Y3R8OTMxNjB8aW1hZ2UvanBlZ3xoYWYvaGJiLzk0Njk5MzEwOTQwNDYvQkFDMDA5MTU5LTQtMDFfMTIwMFd4MTIwMEguanBnfDQ3ZjFiOWVlZWIwNzQzYjA5NTk1OTczN2ZkY2U1Njg0MTE2MDk3ZDE0ZmQ5ZWE4YzNiMzFjMDZhYmI5MWIxMzc">
-        </div>
-        <div class="col">
-            <div class="h3 font-weight-bold text-uppercase">
-                <?= $model->name ?>
-            </div>
-            <?= str_repeat("* ", round($model->getMeanMark())) . "  " . $model->getMeanMark() . '/5' ?>
-            <?= 'Отзывов: ' . count($model->getComments()->all()) ?>
-
-            <div>
-                 
-            </div>
-
-            <?= 'Цена: ' . $model->price . "Р" ?>
-
-            <div>
-                 
-            </div>
-
-            <div>
-                <?= $model->description ?>
-            </div>
-        </div>
-
-
-    </div>
-    <h1> </h1>
 
     <div class="container">
-        <div class="h4">Отзывы</div>
+        <div class="row">
+            <div class="col-md-7">
+                <img class="img-fluid"
+                     src=<?= $model->productImages[0]->image_path ?>>
+            </div>
+            <div class="col-md-5">
+                <div class="h3 font-weight-bold text-uppercase">
+                    <?= $model->name ?>
+                </div>
+                <div class="md-3 mt-3">
+                    <?= str_repeat("* ", round($model->getMeanMark())) . "  " . $model->getMeanMark() . '/5' ?>
+                    <?= 'Отзывов: ' . count($model->getComments()->all()) ?>
+                </div>
+                <div class="md-3 mt-3">
+                    <?= 'Цена: ' . $model->price . "Р" ?>
+                </div>
+
+                <div class="mt-5 md-5">
+                    <?= Html::radioList("Размер", null, [1 => "S", 2 => "M", 3 => "L"],) ?>
+                    <!-- TODO список размеров? -->
+                </div>
+
+                <button class="mt-5 btn-info rounded-lg">В корзину</button>
+
+                <div class="mt-5">
+                    <?= $model->description ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="comment-create mt-5">
+        <?php if (Yii::$app->user->isGuest): ?>
+            <p4>
+                Отзывы могут оставлять только зарегистрированные пользователи
+            </p4>
+        <?php else: ?>
+
+            <?php $form = ActiveForm::begin(['action' => '/comment/create',]); ?>
+            <?= $form->field($modelComment, 'mark')->radioList([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5]) ?>
+            <?= $form->field($modelComment, 'text')->textInput(['placeholder' => "Напишите свой отзыв здесь..."]) ?>
+
+            <div class="form-group">
+                <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
+            </div>
+            <?php ActiveForm::end(); ?>
+
+        <?php endif ?>
+    </div><!-- comment-create -->
+
+    <div class="mt-lg-5 container">
+        <div class="h4">
+            <?php echo ($model->comments) ? "Отзывы" : "Отзывов ещё нет" ?>
+        </div>
         <div class="row">
             <div class="col-md-8" style="background: #9fcdff;">
                 <?php foreach ($model->comments as $comment): ?>
