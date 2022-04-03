@@ -39,7 +39,7 @@ class Product extends \yii\db\ActiveRecord
             [['name', 'price', 'active'], 'required'],
             [['price'], 'number'],
             [['active', 'category_id'], 'integer'],
-            [['name', 'description'], 'string', 'max' => 255],
+            [['name', 'description'], 'string', 'max' => 1000],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
         ];
     }
@@ -102,8 +102,7 @@ class Product extends \yii\db\ActiveRecord
     public function getMeanMark()
     {
         $map = ArrayHelper::map($this->getComments()->all(), 'comment', 'mark');
-        $mean_mark = array_sum($map) / count($map);
-        return $mean_mark;
+        return count($map) ? array_sum($map) / count($map) : 0;
     }
 
     public function getBreadcrumbs()

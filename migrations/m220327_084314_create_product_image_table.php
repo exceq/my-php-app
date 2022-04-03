@@ -13,8 +13,9 @@ class m220327_084314_create_product_image_table extends Migration
     public function safeUp()
     {
         $this->createTable('{{%product_image}}', [
+            'id' => $this->primaryKey(),
             'product_id' => $this->integer()->notNull(),
-            'image_path' => $this->string()->notNull(),
+            'image_path' => $this->string(400)->notNull(),
         ]);
 
         $this->addForeignKey(

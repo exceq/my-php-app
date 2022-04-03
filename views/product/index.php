@@ -1,45 +1,51 @@
 <?php
 
-use app\models\Product;
-use yii\grid\GridView;
+use app\widgets\categoryList\CategoryList;
 use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\grid\ActionColumn;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Products';
+$this->title = 'Одежда';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 <div class="product-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Product', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <div class="row">
+        <nav class="col-2">
+            <?php echo CategoryList::widget() ?>
+        </nav>
 
+        <div class="col-10">
+            <div class="card-group">
+                <?php foreach ($dataProvider->query->all() as $product): ?>
+                    <div class="col-md-3">
+                        <div id="cardItem" class="card">
+                            <img class="img-fluid card-img-top" src="<?= $product->productImages[0]->image_path ?>"
+                                 alt="Card image cap">
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'columns' => [
-//            ['class' => 'yii\grid\SerialColumn'],
+                            <h4 class="card-title ml-2 mr-2 mt-3"> <?= $product->price . " ₽" ?></h4>
 
-            'id',
-            'name',
-            'description',
-            'price',
-            'active',
-            //'category_id',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Product $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                }
-            ],
-        ],
-    ]); ?>
-
-
+                            <div class="card-text ml-2 mr-2 pd-3"> <?= $product->name ?></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+<style>
+    #cardItem:hover {
+        box-shadow: 4px 4px 8px #cccccc;
+        transform: scale(1.05);
+    }
+
+    .card-title {
+        color: red;
+    }
+</style>

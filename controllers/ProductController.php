@@ -2,11 +2,14 @@
 
 namespace app\controllers;
 
+use app\models\Comment;
 use app\models\Product;
+use app\models\ProductImage;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
+use yii\helpers\Console;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -40,7 +43,6 @@ class ProductController extends Controller
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Product::find(),
-            /*
             'pagination' => [
                 'pageSize' => 50
             ],
@@ -49,7 +51,6 @@ class ProductController extends Controller
                     'id' => SORT_DESC,
                 ]
             ],
-            */
         ]);
 
         return $this->render('index', [
@@ -67,6 +68,7 @@ class ProductController extends Controller
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'modelComment' => new Comment(),
         ]);
     }
 
@@ -81,6 +83,9 @@ class ProductController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                $pimg = new ProductImage(['product_id' => $model->id, 'image_path' => $this->request->post('Product')['productImages']]);
+                Console::output(var_export($pimg));
+                $pimg->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
