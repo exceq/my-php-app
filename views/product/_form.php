@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Category;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -20,7 +21,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'active')->checkbox() ?>
 
-    <?= $form->field($model, 'category_id')->dropDownList((array)\app\models\Category::getAllCategoriesString()) ?>
+    <?= $form->field($model, 'productImages')->textarea() ?>
+
+    <?= $form->field($model, 'category_id')->dropDownList(Category::getAllCategoriesString()) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

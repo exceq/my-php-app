@@ -30,9 +30,12 @@ class Comment extends \yii\db\ActiveRecord
      */
     public function rules()
     {
+        $MAX_MARK = 5;
         return [
             [['user_id', 'date', 'mark'], 'required'],
             [['user_id', 'mark'], 'integer'],
+            [['mark'], 'compare', 'compareValue' => $MAX_MARK, 'operator' => '<='],
+            [['mark'], 'compare', 'compareValue' => 0, 'operator' => '>'],
             [['date'], 'safe'],
             [['text'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -48,8 +51,8 @@ class Comment extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'date' => 'Date',
-            'mark' => 'Mark',
-            'text' => 'Text',
+            'mark' => 'Оценка',
+            'text' => 'Отзыв',
         ];
     }
 
