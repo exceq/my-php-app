@@ -77,7 +77,9 @@ class Category extends \yii\db\ActiveRecord
         //TODO сделать что-то с этим уродством
         foreach (Category::find()->all() as $cat) {
             $id = $cat->id;
-            $categories = array_map(function ($c) { return $c->name;}, $cat->getAllCategories());
+            $categories = array_map(function ($c) {
+                return $c->name;
+            }, $cat->getAllCategories());
             $result = join(" → ", $categories);
             $res[$id] = $result;
         }
@@ -86,6 +88,9 @@ class Category extends \yii\db\ActiveRecord
 //        return ArrayHelper::getColumn(Category::find()->asArray()->all(), 'name', 'id');
     }
 
+    /**
+     * @return array Category[]
+     */
     public function getAllCategories(): array
     {
         $category = $this;
@@ -95,5 +100,25 @@ class Category extends \yii\db\ActiveRecord
             $result_list[] = $category;
         }
         return array_reverse($result_list);
+    }
+
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public static function getAllCategoriesById($id): array
+    {
+        return Category::findOne(['id' => $id])->getAllCategories();
+    }
+
+    public function getChildren(): array
+    {
+        return Category::findAll(['parent_category_id' => $this->id]);
+    }
+
+    public static function getRootCategory($id = null): ?Category
+    {
+        return Category::findOne(["parent_category_id" => $id]);
     }
 }
