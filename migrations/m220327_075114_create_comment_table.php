@@ -17,7 +17,7 @@ class m220327_075114_create_comment_table extends Migration
             'user_id' => $this->integer()->notNull(),
             'date'=>$this->timestamp()->notNull(),
             'mark'=>$this->integer()->notNull(),
-            'text'=>$this->string(),
+            'text'=>$this->string(1000)->notNull(),
         ]);
 
         $this->addForeignKey(
