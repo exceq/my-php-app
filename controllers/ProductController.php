@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Comment;
+use app\models\CommentForm;
 use app\models\Product;
 use app\models\ProductImage;
 use yii\data\ActiveDataProvider;
@@ -66,8 +67,12 @@ class ProductController extends Controller
      */
     public function actionView($id)
     {
+        $modelComment = new Comment();
+        $modelComment->scenario = Comment::SCENARIO_CREATE_COMMENT;
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'modelComment'=> $modelComment,
         ]);
     }
 

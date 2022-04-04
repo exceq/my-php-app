@@ -59,9 +59,10 @@ $this->params['breadcrumbs'][] = $this->title;
             </p4>
         <?php else: ?>
 
-            <?php $form = ActiveForm::begin(['action' => '/comment/create',]); ?>
+            <?php $form = ActiveForm::begin(['action' => '/comment/create', 'validateOnSubmit' => false,]); ?>
             <?= $form->field($modelComment, 'mark')->radioList([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5]) ?>
             <?= $form->field($modelComment, 'text')->textInput(['placeholder' => "Напишите свой отзыв здесь..."]) ?>
+            <?= $form->field($modelComment, 'product_id')->hiddenInput(['value' => $model->id])->label(false) ?>
 
             <div class="form-group">
                 <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
@@ -76,15 +77,24 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php echo ($model->comments) ? "Отзывы" : "Отзывов ещё нет" ?>
         </div>
         <div class="row">
-            <div class="col-md-8" style="background: #9fcdff;">
+            <div class="col-md-8">
                 <?php foreach ($model->comments as $comment): ?>
-                    <?= $comment->user->firstname ?>
-                    <div></div>
-                    <?= $comment->mark ?>
-                    <div></div>
-                    <?= $comment->date ?>
-                    <div></div>
-                    <?= $comment->text ?>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <b><?= str_repeat("* ", $comment->mark) ?> </b>
+                            <p><?= $comment->text ?></p>
+
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-row align-items-center">
+                                    <p class="small mb-0 ms-2"><?= $comment->user->username ?></p>
+                                </div>
+                                <div class="d-flex flex-row align-items-center">
+                                    <p class="small text-muted mb-0"><?= $comment->date ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>

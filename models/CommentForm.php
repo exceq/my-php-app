@@ -13,8 +13,8 @@ class CommentForm extends Model
     public function rules()
     {
         return [
-            // username and password are both required
             [['text', 'mark'], 'required'],
+            [['mark'], 'integer', 'min' => 1, 'max' => 5, 'message' => 'Неверный диапазон'],
         ];
     }
 }

@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-10">
             <div class="card-group">
                 <?php foreach ($dataProvider->query->all() as $product): ?>
-                    <div class="col-md-3">
+                    <div class="col-md-3" onclick="location.href='/product/view?id=<?= $product->id ?>';">
                         <div id="cardItem" class="card">
                             <img class="img-fluid card-img-top" src="<?= $product->productImages[0]->image_path ?>"
                                  alt="Card image cap">

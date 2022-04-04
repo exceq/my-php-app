@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Comment;
+use app\models\CommentForm;
 use app\models\Product;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
@@ -79,16 +80,15 @@ class CommentController extends Controller
     public function actionCreate()
     {
         $model = new Comment();
+        $model->scenario = Comment::SCENARIO_CREATE_COMMENT;
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['product/view?id=1', 'id' => $model->id]);
+            if ($model->load($this->request->post()) && $model->fillMetadataAndSave()) {
+                return $this->redirect('/product/view?id=' . $model->product_id);
             }
-        } else {
-            $model->loadDefaultValues();
         }
         return $this->render('/product/view', [
-            'model' => Product::findOne(['id' => 1]),
+            'model' => Product::findOne(['id' => -1]),
         ]);
     }
 
