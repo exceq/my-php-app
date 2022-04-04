@@ -8,6 +8,9 @@ use yii\base\Widget;
 
 class CategoryList extends Widget
 {
+    /**
+     * @var array|int Category ID needs to select in SideBar
+     */
     public $needSelect;
 
     public function run()

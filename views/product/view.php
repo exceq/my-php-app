@@ -8,7 +8,10 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $modelComment app\models\Comment */
+/* @var $modelCartItem app\models\CartItem */
 /* @var $form ActiveForm */
+/* @var $cartForm ActiveForm */
+
 
 $this->title = $model->name;
 
@@ -37,13 +40,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="md-3 mt-3">
                     <?= 'Цена: ' . $model->price . "Р" ?>
                 </div>
-
                 <div class="mt-5 md-5">
                     <?= Html::radioList("Размер", null, [1 => "S", 2 => "M", 3 => "L"],) ?>
                     <!-- TODO список размеров? -->
                 </div>
 
-                <button class="mt-5 btn-info rounded-lg">В корзину</button>
+                <?php $cartForm = ActiveForm::begin(['id' => 'cart_item_create', 'action' => '/cart/create']); ?>
+                <?= $cartForm->field($modelCartItem, 'product_id')->hiddenInput(['value' => $model->id])->label(false) ?>
+                <?= Html::submitButton('Добавить в корзину', ['class' => 'mt-5 btn-info rounded-lg']) ?>
+                <?php ActiveForm::end(); ?>
 
                 <div class="mt-5">
                     <?= $model->description ?>
@@ -59,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
             </p4>
         <?php else: ?>
 
-            <?php $form = ActiveForm::begin(['action' => '/comment/create', 'validateOnSubmit' => false,]); ?>
+            <?php $form = ActiveForm::begin(['id' => 'comment_create', 'action' => '/comment/create']); ?>
             <?= $form->field($modelComment, 'mark')->radioList([1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5]) ?>
             <?= $form->field($modelComment, 'text')->textInput(['placeholder' => "Напишите свой отзыв здесь..."]) ?>
             <?= $form->field($modelComment, 'product_id')->hiddenInput(['value' => $model->id])->label(false) ?>

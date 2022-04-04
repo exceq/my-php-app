@@ -30,7 +30,7 @@ class m220402_160756_create_role_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropColumn('fk-user-role_id', 'user');
+        $this->dropForeignKey('fk-user-role_id', 'user');
         $this->dropTable('{{%role}}');
     }
 }

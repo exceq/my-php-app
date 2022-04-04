@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\CartItem;
 use app\models\Comment;
 use app\models\Product;
 use app\models\ProductImage;
@@ -71,7 +72,8 @@ class ProductController extends Controller
 
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'modelComment'=> $modelComment,
+            'modelComment' => $modelComment,
+            'modelCartItem' => new CartItem(),
         ]);
     }
 

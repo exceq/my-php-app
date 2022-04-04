@@ -52,7 +52,9 @@ AppAsset::register($this);
             ),
             Yii::$app->user->isGuest ? (
             ['label' => 'Регистрация', 'url' => ['/user/signup']]
-            ) : ("")
+            ) : (""),
+            ['label' => 'Корзина', 'url' => ['/cart/view']],
+            ['label' => 'Заказы', 'url' => ['/order/index']]
         ],
     ]);
     NavBar::end();

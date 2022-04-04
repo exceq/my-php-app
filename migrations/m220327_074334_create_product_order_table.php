@@ -15,8 +15,8 @@ class m220327_074334_create_product_order_table extends Migration
         $this->createTable('{{%product_order}}', [
             'order_id' => $this->integer()->notNull(),
             'product_id' => $this->integer()->notNull(),
-            'date' => $this->timestamp()->notNull(),
         ]);
+        $this->addPrimaryKey( 'product-order_pk', 'product_order', ['order_id', 'product_id']);
 
         $this->addForeignKey(
             'fk-product_order-product_id',
@@ -29,7 +29,7 @@ class m220327_074334_create_product_order_table extends Migration
         $this->addForeignKey(
             'fk-product_order-order_id',
             'product_order',
-            'order_id',
+            'product_id',
             'product',
             'id',
         );
@@ -40,6 +40,7 @@ class m220327_074334_create_product_order_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropPrimaryKey('product-order_pk', 'product_order');
         $this->dropForeignKey('fk-product_order-product_id','product_order');
         $this->dropForeignKey('fk-product_order-order_id','product_order');
         $this->dropTable('{{%product_order}}');

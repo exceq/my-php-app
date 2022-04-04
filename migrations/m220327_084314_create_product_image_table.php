@@ -33,6 +33,8 @@ class m220327_084314_create_product_image_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('fk-product_image-product_id', 'product_image');
+        $this->dropPrimaryKey( 'product-image_pk', 'product_image');
         $this->dropTable('{{%product_image}}');
     }
 }

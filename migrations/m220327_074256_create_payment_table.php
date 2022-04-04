@@ -14,8 +14,9 @@ class m220327_074256_create_payment_table extends Migration
     {
         $this->createTable('{{%payment}}', [
             'id' => $this->primaryKey(),
-            'date' => $this->timestamp()->notNull(),
-            'user_id' => $this->integer()->notNull()
+            'date' => $this->integer()->notNull(),
+            'user_id' => $this->integer()->notNull(),
+            'amount' => $this->float()->notNull(),
         ]);
 
         $this->addForeignKey(
@@ -32,7 +33,7 @@ class m220327_074256_create_payment_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-payment-user_id','payment');
+        $this->dropForeignKey('fk-payment-user_id', 'payment');
         $this->dropTable('{{%payment}}');
     }
 }

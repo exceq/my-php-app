@@ -14,6 +14,7 @@ use Yii;
  *
  * @property Payment $payment
  * @property ProductOrder[] $productOrders
+ * @property Product[] $products
  * @property User $user
  */
 class Order extends \yii\db\ActiveRecord
@@ -72,6 +73,10 @@ class Order extends \yii\db\ActiveRecord
         return $this->hasMany(ProductOrder::className(), ['order_id' => 'id']);
     }
 
+    public function getProducts() {
+        return $this->hasMany(Product::className(), ['id' => 'product_id'])
+            ->viaTable('product_order', ['order_id' => 'id']);
+    }
     /**
      * Gets query for [[User]].
      *

@@ -2,17 +2,21 @@
 
 namespace app\controllers;
 
-use app\models\Comment;
-use app\models\Product;
+use app\models\CartItem;
+use app\models\Order;
+use app\models\Payment;
+use app\models\ProductOrder;
+use app\models\User;
+use Yii;
 use yii\data\ActiveDataProvider;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\filters\VerbFilter;
 
 /**
- * CommentController implements the CRUD actions for Comment model.
+ * OrderController implements the CRUD actions for Order model.
  */
-class CommentController extends Controller
+class OrderController extends Controller
 {
     /**
      * @inheritDoc
@@ -33,14 +37,14 @@ class CommentController extends Controller
     }
 
     /**
-     * Lists all Comment models.
+     * Lists all Order models.
      *
      * @return string
      */
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Comment::find(),
+            'query' => Order::find(),
             /*
             'pagination' => [
                 'pageSize' => 50
@@ -59,7 +63,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Displays a single Comment model.
+     * Displays a single Order model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -72,25 +76,57 @@ class CommentController extends Controller
     }
 
     /**
-     * Creates a new Comment model.
+     * Creates a new Order model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
      */
     public function actionCreate()
     {
-        $model = new Comment();
-        $model->scenario = Comment::SCENARIO_CREATE_COMMENT;
-
+        $user_id = Yii::$app->user->id;
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->fillMetadataAndSave()) {
-                return $this->redirect('/product/view?id=' . $model->product_id);
+            $transaction = Yii::$app->db->beginTransaction();
+            $success = true;
+
+            $order = new Order();
+            $order->user_id = $user_id;
+            $order->date = time();
+            $success = $success && $order->save();
+
+
+            $sum = 0;
+            foreach (CartItem::findAllCartItemsOfUser($user_id) as $item) {
+                $sum += $item->count * $item->product->price;
+                $order->link('products', $item->product);
+            }
+            $payment = new Payment();
+            $payment->amount = $sum;
+            $payment->date = time();
+            $payment->link('user', User::findIdentity($user_id));
+
+            $success = $success && $payment->save();
+            $order->link('payment', $payment);
+
+            CartItem::deleteAll(['user_id' => $user_id]);
+
+
+            $success = $success && $order->save();
+            if ($success) {
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $order->id]);
+            } else {
+                $transaction->rollBack();
+                return $this->redirect(['/site/error']);
             }
         }
-        return $this->redirect('/product/view?id=' . $model->product_id);
+
+        return $this->render('create', [
+            'model' => CartItem::findAllCartItemsOfUser($user_id),
+        ]);
     }
 
     /**
-     * Updates an existing Comment model.
+     * Updates an existing Order model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -110,7 +146,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Deletes an existing Comment model.
+     * Deletes an existing Order model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -124,15 +160,15 @@ class CommentController extends Controller
     }
 
     /**
-     * Finds the Comment model based on its primary key value.
+     * Finds the Order model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Comment the loaded model
+     * @return Order the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Comment::findOne(['id' => $id])) !== null) {
+        if (($model = Order::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

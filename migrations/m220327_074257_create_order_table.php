@@ -41,8 +41,8 @@ class m220327_074257_create_order_table extends Migration
      */
     public function safeDown()
     {
+        $this->DropForeignKey('fk-payment-user_id', 'payment');
         $this->dropForeignKey('fk-order-user_id', 'order');
-        $this->dropForeignKey('fk-order-payment_id', 'order');
         $this->dropTable('{{%order}}');
     }
 }

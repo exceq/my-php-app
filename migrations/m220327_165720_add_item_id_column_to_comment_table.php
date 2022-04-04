@@ -27,7 +27,7 @@ class m220327_165720_add_item_id_column_to_comment_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('fk-comment-product_id', 'comment');
         $this->dropColumn('comment', 'product_id');
-        $this->dropColumn('fk-comment-product_id', 'comment');
     }
 }

@@ -19,6 +19,7 @@ use yii\helpers\ArrayHelper;
  * @property Comment[] $comments
  * @property ProductImage[] $productImages
  * @property ProductOrder[] $productOrders
+ * @property Order[] $Orders
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -99,11 +100,15 @@ class Product extends \yii\db\ActiveRecord
     {
         return $this->hasMany(ProductOrder::className(), ['order_id' => 'id']);
     }
+    public function getOrders() {
+        return $this->hasMany(Order::className(), ['id' => 'order_id'])
+            ->viaTable('product_order', ['product_id' => 'id']);
+    }
 
     public function getMeanMark()
     {
-        $map = ArrayHelper::map($this->getComments()->all(), 'comment', 'mark');
-        return count($map) ? array_sum($map) / count($map) : 0;
+        $map = ArrayHelper::getColumn($this->comments, 'mark');
+        return count($map) ? array_sum($map) / floatval(count($map)) : 0;
     }
 
     public function getBreadcrumbs()

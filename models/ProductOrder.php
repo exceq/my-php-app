@@ -9,10 +9,9 @@ use Yii;
  *
  * @property int $order_id
  * @property int $product_id
- * @property string $date
  *
- * @property Product $order
- * @property Order $order0
+ * @property Order $order
+ * @property Product $product
  */
 class ProductOrder extends \yii\db\ActiveRecord
 {
@@ -30,10 +29,10 @@ class ProductOrder extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['order_id', 'product_id', 'date'], 'required'],
+            [['order_id', 'product_id'], 'required'],
             [['order_id', 'product_id'], 'integer'],
-            [['date'], 'safe'],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['order_id' => 'id']],
+            [['order_id', 'product_id'], 'unique', 'targetAttribute' => ['order_id', 'product_id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
         ];
     }
@@ -46,7 +45,6 @@ class ProductOrder extends \yii\db\ActiveRecord
         return [
             'order_id' => 'Order ID',
             'product_id' => 'Product ID',
-            'date' => 'Date',
         ];
     }
 
@@ -57,16 +55,16 @@ class ProductOrder extends \yii\db\ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Product::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::className(), ['id' => 'order_id']);
     }
 
     /**
-     * Gets query for [[Order0]].
+     * Gets query for [[Product]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getOrder0()
+    public function getProduct()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Product::className(), ['id' => 'product_id']);
     }
 }
