@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\models\Comment;
-use app\models\CommentForm;
 use app\models\Product;
 use app\models\ProductImage;
 use yii\data\ActiveDataProvider;

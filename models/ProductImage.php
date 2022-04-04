@@ -30,7 +30,8 @@ class ProductImage extends \yii\db\ActiveRecord
         return [
             [['product_id', 'image_path'], 'required'],
             [['product_id'], 'integer'],
-            [['image_path'], 'string', 'max' => 255],
+            [['image_path'], 'string', 'max' => 400],
+            [['product_id', 'image_path'], 'unique', 'targetAttribute' => ['product_id', 'image_path']],
             [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
         ];
     }

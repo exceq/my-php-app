@@ -3,7 +3,6 @@
 namespace app\controllers;
 
 use app\models\Comment;
-use app\models\CommentForm;
 use app\models\Product;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
