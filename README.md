@@ -26,8 +26,6 @@ ______________
 docker run --rm -v $(pwd)/web/app/my-php-app:/app composer update
 ```
 - В MySQL создать базу данных `shop` любым способом.
-- Создать пользователя `login:shop password:shop`, дать ему права на БД `shop`,
-либо поменять в `my-php-app/config/db.php` логин / пароль на `root/root`
 - Обновить структуру БД, накатив миграцию:
 ```sh
 docker-compose exec -T php ./app/my-php-app/yii migrate/up
