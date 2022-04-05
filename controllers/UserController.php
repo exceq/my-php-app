@@ -108,7 +108,7 @@ class UserController extends Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+        return $this->redirect('/product/index');
     }
 
     /**
@@ -135,7 +135,11 @@ class UserController extends Controller
 
     public function actionOrders()
     {
-        $model = Order::find(['user_id' => Yii::$app->user->id])->orderBy(['date' => SORT_DESC])->all();
+        $model = Order::find()
+            ->where(['user_id' => Yii::$app->user->id])
+            ->orderBy(['date' => SORT_DESC])
+            ->all();
+//        echo var_export(Yii::$app->user->id);die;
         return $this->render('orders', [
             'model' => $model,
         ]);

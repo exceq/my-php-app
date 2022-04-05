@@ -51,6 +51,7 @@ AppAsset::register($this);
                     . '</li>'
                 ),
             Yii::$app->user->isGuest ? (['label' => 'Регистрация', 'url' => ['/user/signup']]) : (""),
+            Yii::$app->user->isGuest ? ("") : (['label' => 'Корзина', 'url' => ['/cart/view']]),
             Yii::$app->user->isGuest ? ("") : (['label' => 'Профиль', 'url' => ['/user/profile']]),
         ],
     ]);

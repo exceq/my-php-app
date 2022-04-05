@@ -67,11 +67,13 @@ class OrderController extends Controller
             $order->date = time();
             $success = $success && $order->save();
 
-
             $sum = 0;
+            $i = 0;
             foreach (CartItem::findAllCartItemsOfUser($user_id) as $item) {
                 $sum += $item->count * $item->product->price;
                 $order->link('products', $item->product);
+                $order->productOrders[$i]->count = $item->count;
+                $order->productOrders[$i]->save();
             }
             $payment = new Payment();
             $payment->amount = $sum;
@@ -87,7 +89,7 @@ class OrderController extends Controller
             $success = $success && $order->save();
             if ($success) {
                 $transaction->commit();
-                return $this->redirect(['view', 'id' => $order->id]);
+                return $this->redirect(['/user/orders']);
             } else {
                 $transaction->rollBack();
                 return $this->redirect(['/site/error']);

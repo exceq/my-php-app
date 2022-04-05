@@ -24,8 +24,8 @@
                     <div class="card shadow-0 border mb-4">
                         <div class="card-body">
                             <?php foreach ($order->products as $product):
-                                $sum += $product->price;
-                                $i = 0; ?>
+                                $i = 0;
+                                $sum += $product->price * $order->productOrders[$i]->count ?>
                                 <div class="row">
 
                                     <div class="col-md-2">
