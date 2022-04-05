@@ -25,10 +25,10 @@ class CartController extends Controller
             [
                 'access' => [
                     'class' => AccessControl::className(),
-                    'only' => ['create'],
+                    'only' => ['create', 'view'],
                     'rules' => [
                         [
-                            'actions' => ['create'],
+                            'actions' => ['create', 'view'],
                             'allow' => true,
                             'roles' => ['@'],
                         ],

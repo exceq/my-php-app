@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\LoginForm;
+use app\models\Order;
 use app\models\SignupForm;
 use app\models\User;
 use Yii;
@@ -21,12 +22,17 @@ class UserController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'class' => AccessControl::class,
+                'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
-                        'actions' => ['logout'],
                         'allow' => true,
+                        'actions' => ['login', 'signup'],
+                        'roles' => ['?'],
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['logout', 'profile', 'orders'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -112,15 +118,25 @@ class UserController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionProfile()
     {
-        $model = $this->findModel($id);
+        $model = User::getCurrentUser();
+        $model->scenario = User::SCENARIO_USER_UPDATE;
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', 'Изменения успешно сохранены!');
+            return $this->redirect(['/user/profile', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
+        return $this->render('profile', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionOrders()
+    {
+        $model = Order::find(['user_id' => Yii::$app->user->id])->orderBy(['date' => SORT_DESC])->all();
+        return $this->render('orders', [
             'model' => $model,
         ]);
     }

@@ -1,6 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
+
 /** @var string $content */
 
 use app\assets\AppAsset;
@@ -38,23 +39,19 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             ['label' => 'Популярное', 'url' => ['/product/index']],
-            Yii::$app->user->isGuest ? (
-                ['label' => 'Вход', 'url' => ['/user/login']]
-            ) : (
-                '<li>'
-                . Html::beginForm(['/user/logout'], 'post', ['class' => 'form-inline'])
-                . Html::submitButton(
-                    'Выход (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
-            ),
-            Yii::$app->user->isGuest ? (
-            ['label' => 'Регистрация', 'url' => ['/user/signup']]
-            ) : (""),
-            ['label' => 'Корзина', 'url' => ['/cart/view']],
-            ['label' => 'Заказы', 'url' => ['/order/index']]
+            Yii::$app->user->isGuest ? (['label' => 'Вход', 'url' => ['/user/login']]) :
+                (
+                    '<li>'
+                    . Html::beginForm(['/user/logout'], 'post', ['class' => 'form-inline'])
+                    . Html::submitButton(
+                        'Выход (' . Yii::$app->user->identity->username . ')',
+                        ['class' => 'btn btn-link logout']
+                    )
+                    . Html::endForm()
+                    . '</li>'
+                ),
+            Yii::$app->user->isGuest ? (['label' => 'Регистрация', 'url' => ['/user/signup']]) : (""),
+            Yii::$app->user->isGuest ? ("") : (['label' => 'Профиль', 'url' => ['/user/profile']]),
         ],
     ]);
     NavBar::end();

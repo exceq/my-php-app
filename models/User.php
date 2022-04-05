@@ -25,11 +25,21 @@ use yii\web\IdentityInterface;
  * @property Payment[] $payments
  * @property Role $role
  */
+
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
-    /**
-     * {@inheritdoc}
-     */
+    const SCENARIO_USER_REGISTER = 'user_register';
+    const SCENARIO_USER_UPDATE = 'user_update';
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_USER_REGISTER => ['email', 'username'],
+            self::SCENARIO_USER_UPDATE => ['email', 'username', 'phone_number'],
+        ];
+    }
+
+
     public static function tableName()
     {
         return 'user';
@@ -69,7 +79,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             'auth_key' => 'Auth Key',
             'password_hash' => 'Password Hash',
             'password_reset_token' => 'Password Reset Token',
-            'phone_number' => 'Phone Number',
+            'phone_number' => 'Номер телефона',
             'email' => 'Email',
             'is_active' => 'Is Active',
             'created_at' => 'Created At',
@@ -141,6 +151,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function validateAuthKey($authKey)
     {
         return $this->authKey === $authKey;
+    }
+
+    public static function getCurrentUser(): ?User
+    {
+        return User::findOne(['id'=>Yii::$app->user->id]);
     }
 
 

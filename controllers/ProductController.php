@@ -6,9 +6,9 @@ use app\models\CartItem;
 use app\models\Comment;
 use app\models\Product;
 use app\models\ProductImage;
+use app\behaviours\RejectUsersBehaviour;
 use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
-use yii\helpers\Console;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -31,6 +31,7 @@ class ProductController extends Controller
                         'delete' => ['POST'],
                     ],
                 ],
+                RejectUsersBehaviour::className(),
             ]
         );
     }
@@ -84,12 +85,13 @@ class ProductController extends Controller
      */
     public function actionCreate()
     {
+        $this->rejectUser();
+
         $model = new Product();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 $pimg = new ProductImage(['product_id' => $model->id, 'image_path' => $this->request->post('Product')['productImages']]);
-                Console::output(var_export($pimg));
                 $pimg->save();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
@@ -111,6 +113,8 @@ class ProductController extends Controller
      */
     public function actionUpdate($id)
     {
+        $this->rejectUser();
+
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
@@ -131,6 +135,8 @@ class ProductController extends Controller
      */
     public function actionDelete($id)
     {
+        $this->rejectUser();
+
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);

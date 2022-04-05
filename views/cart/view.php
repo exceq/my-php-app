@@ -69,7 +69,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                             </h6>
                                         </div>
                                         <?php ActiveForm::begin(['action' => '/cart/delete']); ?>
-                                        <?= Html::submitButton('Очистить корзину', ['class' => 'btn btn-block btn-lg btn-danger']) ?>
+                                        <?= Html::submitButton('Очистить корзину', ['class' => 'mt-5 btn btn-block btn-lg btn-danger']) ?>
                                         <?php ActiveForm::end(); ?>
                                     </div>
                                 </div>
